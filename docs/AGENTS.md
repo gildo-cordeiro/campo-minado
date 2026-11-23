@@ -62,3 +62,22 @@ Parâmetros opcionais:
   para desenhar o tabuleiro a cada passo.
 * `max_moves`: limite de ações (padrão: 3 vezes o número de células). Se o agente
   passar disso sem terminar, gera `AgentStuckError`.
+
+## Explicar as decisões na CLI
+
+No modo agente, a CLI mostra um painel "Log de Raciocínio do Agente". Depois de cada ação,
+ela chama `agent.explain()` e acrescenta as linhas devolvidas ao log. O método é opcional
+(o padrão devolve `[]`) e as linhas aceitam markup do rich:
+
+```python
+class LogicAgent(Agent):
+    name = "logic"
+
+    def choose_action(self, observation: Observation) -> Action:
+        ...
+        self._reason = [f"  [green]segura[/green] por dedução: {cell}"]
+        return Action.reveal(*cell)
+
+    def explain(self) -> list[str]:
+        return self._reason
+```
