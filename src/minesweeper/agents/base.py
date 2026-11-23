@@ -70,3 +70,12 @@ class Agent(ABC):
     @abstractmethod
     def choose_action(self, observation: Observation) -> Action:
         """Return the next action, based only on the observation."""
+
+    def explain(self) -> list[str]:
+        """Lines explaining the last decision, shown in the CLI's reasoning log.
+
+        Optional: override it to show why the agent chose its last action
+        (deduced cells, probabilities...). Lines may use rich markup, e.g.
+        "[green]safe[/green]". The CLI calls it right after each action.
+        """
+        return []

@@ -20,6 +20,8 @@ from rich.text import Text
 
 from minesweeper.environment import FLAGGED, HIDDEN, Cell, GameStatus, Observation
 
+from .coords import col_label, row_label
+
 CELL_WIDTH = 3
 LABEL_WIDTH = 3
 LABEL_STYLE = "bold cyan"
@@ -70,7 +72,7 @@ def render_board(
     exploded: Cell | None = None,
     highlight: Cell | None = None,
 ) -> Text:
-    """Build the board with row and column numbers.
+    """Build the board with column letters and row numbers (chess style: C4).
 
     mines and exploded are only given when the game is over, to show where
     the mines were. highlight marks a cell with brackets (the cell the last
@@ -81,11 +83,11 @@ def render_board(
 
     text.append(" " * LABEL_WIDTH)
     for col in range(observation.cols):
-        text.append(f"{col:^{CELL_WIDTH}}", style=LABEL_STYLE)
+        text.append(f"{col_label(col):^{CELL_WIDTH}}", style=LABEL_STYLE)
     text.append("\n")
 
     for row in range(observation.rows):
-        text.append(f"{row:>{LABEL_WIDTH - 1}} ", style=LABEL_STYLE)
+        text.append(f"{row_label(row):>{LABEL_WIDTH - 1}} ", style=LABEL_STYLE)
         for col in range(observation.cols):
             symbol, style = _symbol(observation, (row, col), mine_set, exploded)
             if (row, col) == highlight:
