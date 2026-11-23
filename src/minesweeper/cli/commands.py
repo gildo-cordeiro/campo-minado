@@ -1,9 +1,17 @@
-"""Reads and validates the commands typed by the human player."""
+"""Reads and validates the commands typed by the human player.
+
+A move is just a cell name, chess style:
+
+    C4    open the cell in column C, row 4
+    !C4   place or remove a flag on C4
+"""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+
+from .coords import parse_cell
 
 
 class CommandKind(str, Enum):
@@ -19,22 +27,15 @@ class CommandError(ValueError):
 
 @dataclass(frozen=True)
 class Command:
+    """row and col are 0-based, like everywhere else in the code."""
+
     kind: CommandKind
     row: int = 0
     col: int = 0
 
 
-_ALIASES = {
-    "a": CommandKind.REVEAL,
-    "abrir": CommandKind.REVEAL,
-    "r": CommandKind.REVEAL,
-    "reveal": CommandKind.REVEAL,
-    "b": CommandKind.FLAG,
-    "bandeira": CommandKind.FLAG,
-    "f": CommandKind.FLAG,
-    "flag": CommandKind.FLAG,
+_WORDS = {
     "?": CommandKind.HELP,
-    "h": CommandKind.HELP,
     "ajuda": CommandKind.HELP,
     "help": CommandKind.HELP,
     "q": CommandKind.QUIT,
@@ -43,30 +44,32 @@ _ALIASES = {
 }
 
 HELP_TEXT = """\
-Comandos (linhas e colunas começam em 0):
-  a <linha> <coluna>   abrir uma célula        (ex.: a 3 4)
-  b <linha> <coluna>   colocar ou tirar bandeira (ex.: b 3 4)
-  ?                    mostrar esta ajuda
-  q                    sair da partida
-Também valem: abrir, bandeira, ajuda, sair. A vírgula é opcional (a 3,4)."""
+Digite a célula pelo nome: a letra da coluna e o número da linha.
+  C4     abrir a célula C4
+  !C4    colocar ou tirar bandeira em C4
+  ?      mostrar esta ajuda
+  q      sair da partida
+Maiúsculas e minúsculas tanto faz (c4 = C4)."""
 
 
 def parse_command(line: str) -> Command:
     """Turn a typed line into a Command, or raise CommandError."""
-    parts = line.replace(",", " ").split()
-    if not parts:
-        raise CommandError("Digite um comando. Use '?' para ver a ajuda.")
+    text = line.strip()
+    if not text:
+        raise CommandError("Digite uma célula (ex.: C4). Use '?' para ver a ajuda.")
 
-    kind = _ALIASES.get(parts[0].lower())
-    if kind is None:
-        raise CommandError(f"Comando desconhecido: '{parts[0]}'. Use '?' para ver a ajuda.")
-    if kind in (CommandKind.HELP, CommandKind.QUIT):
-        return Command(kind)
+    word = _WORDS.get(text.lower())
+    if word is not None:
+        return Command(word)
 
-    if len(parts) != 3:
-        raise CommandError(f"Use: {parts[0]} <linha> <coluna>  (exemplo: {parts[0]} 3 4).")
-    try:
-        row, col = int(parts[1]), int(parts[2])
-    except ValueError:
-        raise CommandError("Linha e coluna devem ser números inteiros.") from None
-    return Command(kind, row, col)
+    kind = CommandKind.REVEAL
+    if text.startswith("!"):
+        kind = CommandKind.FLAG
+        text = text[1:]
+
+    cell = parse_cell(text)
+    if cell is None:
+        raise CommandError(
+            f"Não entendi '{line.strip()}'. Digite a coluna e a linha, como C4 (ou !C4 para bandeira)."
+        )
+    return Command(kind, *cell)

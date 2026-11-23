@@ -65,12 +65,34 @@ mesmas opções:
 minesweeper --mode human --difficulty easy
 ```
 
+**Como jogar:** as células têm nome no estilo xadrez, com a letra da coluna e o número
+da linha (o tabuleiro mostra os dois). Digite `C4` para abrir a célula C4 e `!C4` para
+colocar ou tirar a bandeira. `?` mostra a ajuda e `q` sai.
+
+Sem argumentos (`python -m minesweeper`), o jogo pergunta o modo, o agente e a dificuldade.
+O que for passado por argumento não é perguntado.
+
+A tela segue o modelo da interface de referência da disciplina (`tictac.py`) e é redesenhada
+a cada jogada:
+
+* **Tabuleiro** à esquerda, com a seed no título e as minas restantes e jogadas embaixo;
+* **Log de Jogadas** (modo humano) ou **Log de Raciocínio do Agente** (modo agente) à direita;
+* **Legenda** com os símbolos e o placar da sessão.
+
+Ao fim de cada partida dá pra jogar de novo e trocar as configurações. No modo agente,
+`--delay` controla o intervalo entre as jogadas, em segundos (padrão: 0.4).
+
 ## Estrutura dos Arquivos
 
 * `src/minesweeper/environment/`: tabuleiro, regras do jogo e percepções do agente.
 * `src/minesweeper/agents/`: implementações dos agentes.
 * `src/minesweeper/inference/`: restrições, busca (CSP) e cálculo de probabilidades.
 * `src/minesweeper/cli/`: interface de terminal.
+  * `app.py`: a interface completa (argumentos, configuração, tela, turnos e placar),
+    no formato do `tictac.py` da disciplina.
+  * `render.py`: desenha o tabuleiro.
+  * `commands.py` e `coords.py`: interpretam o que o jogador digita (`C4`, `!C4`).
+  * `registry.py`: encontra os agentes pelo nome.
 * `experiments/`: scripts de benchmark e resultados.
 * `docs/`: modelagem PEAS e documentação.
 * `assets/`: imagens e gráficos de resultados.
