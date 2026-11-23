@@ -32,12 +32,17 @@ git clone https://github.com/gildo-cordeiro/campo-minado.git
 cd campo-minado
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
-export PYTHONPATH=src
+pip install -e .
 ```
+
+O `pip install -e .` instala o pacote em modo editável: as mudanças no código valem na hora,
+sem reinstalar. Ele também cria o comando `minesweeper`, um atalho para `python -m minesweeper`.
 
 ### 2. Como Executar
 *(em desenvolvimento)*
+
+Ative o ambiente virtual antes de rodar (`source .venv/bin/activate`). A instalação só
+precisa ser feita uma vez; nas próximas sessões basta ativar o venv.
 
 ```bash
 # Jogar como humano (digite '?' no jogo para ver os comandos)
@@ -48,6 +53,16 @@ python -m minesweeper --mode agent --agent random --difficulty easy --seed 42
 
 # Em desenvolvimento: mostrar as probabilidades do agente probabilístico
 python -m minesweeper --mode agent --agent prob --show-prob --seed 42
+
+# Ver todas as opções
+python -m minesweeper --help
+```
+
+Com o pacote instalado, também dá pra usar o comando curto `minesweeper`, que aceita as
+mesmas opções:
+
+```bash
+minesweeper --mode human --difficulty easy
 ```
 
 ## Estrutura dos Arquivos
@@ -59,6 +74,7 @@ python -m minesweeper --mode agent --agent prob --show-prob --seed 42
 * `experiments/`: scripts de benchmark e resultados.
 * `docs/`: modelagem PEAS e documentação.
 * `assets/`: imagens e gráficos de resultados.
+* `pyproject.toml`: metadados do pacote, dependências e o comando `minesweeper`.
 
 ## Resultados e Demonstração
 *(em desenvolvimento)*
