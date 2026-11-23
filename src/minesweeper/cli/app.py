@@ -1,8 +1,7 @@
 """Terminal interface: `python -m minesweeper`.
 
-Follows the course's reference interface (tictac.py): one class holds the
-screen, the turns and the score, and the screen is cleared and redrawn
-every turn:
+One class holds the screen, the turns and the score, and the screen is
+cleared and redrawn every turn:
 
     ┌────────────── title (mode) / level ──────────────┐
     ├── board ──────────────┐ ┌── move/reasoning log ──┤
