@@ -40,11 +40,14 @@ export PYTHONPATH=src
 *(em desenvolvimento)*
 
 ```bash
-# Jogar como humano
-python -m minesweeper.cli --mode human --difficulty easy
+# Jogar como humano (digite '?' no jogo para ver os comandos)
+python -m minesweeper --mode human --difficulty easy
 
-# Assistir um agente jogar, mostrando as probabilidades
-python -m minesweeper.cli --mode agent --agent prob --show-prob --seed 42
+# Assistir um agente jogar (o nome vem do atributo `name` do agente)
+python -m minesweeper --mode agent --agent random --difficulty easy --seed 42
+
+# Em desenvolvimento: mostrar as probabilidades do agente probabilístico
+python -m minesweeper --mode agent --agent prob --show-prob --seed 42
 ```
 
 ## Estrutura dos Arquivos
